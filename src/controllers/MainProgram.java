@@ -4,41 +4,32 @@ import models.Student;
 import models.StudentList;
 import services.repositories.RepositoryFilterer;
 import services.repositories.StudentGenericRepository;
-import services.repositories.StudentRepository;
 import services.singletons.StudentRepositorySingleton;
 
 public class MainProgram {
     public static void main(String[] args) {
         genericRepository();
 
-//        addNewStudent();
+        addNewStudent();
 
-//        StudentRepository studentRepository = StudentRepositorySingleton.getInstance();
-//        StudentList studentList = studentRepository.getStudentList();
-//        System.out.println(studentList.toCSV());
-
-//        updateFilteredStudent();
-
-    }
-
-    public static void updateFilteredStudent() {
-        StudentRepository studentRepository = StudentRepositorySingleton.getInstance();
-        StudentList studentList = studentRepository.filterStudentListByScoreGreaterThan(20);
+        StudentGenericRepository studentRepository = StudentRepositorySingleton.getInstance();
+        StudentList studentList = studentRepository.getList();
         System.out.println(studentList.toCSV());
-        studentList.addStudentScore("1", 10);
-        studentRepository.commit();
+        System.out.println("2: " + StudentRepositorySingleton.getLastCreated());
+
     }
 
     public static void addNewStudent() {
-        StudentRepository studentRepository = StudentRepositorySingleton.getInstance();
-        StudentList studentList = studentRepository.getStudentList();
+        StudentGenericRepository studentRepository = StudentRepositorySingleton.getInstance();
+        StudentList studentList = studentRepository.getList();
         String studentId = studentList.addNewStudent("Jimmy");
         studentList.addStudentScore(studentId, 5);
-        studentRepository.commit();
+//        studentRepository.commit();
+        System.out.println("1: " + StudentRepositorySingleton.getLastCreated());
     }
 
     public static void genericRepository() {
-        StudentGenericRepository repo = new StudentGenericRepository();
+        StudentGenericRepository repo = StudentRepositorySingleton.getInstance();
         StudentList studentList = repo.filterList(new RepositoryFilterer<Student>() {
             @Override
             public boolean filter(Student student) {
@@ -52,8 +43,8 @@ public class MainProgram {
         String studentId = repo.getList().addNewStudent("Joey");
         studentList.addStudentScore(studentId, 20);
         System.out.println(repo.getList().toCSV());
-        repo.commit();
-
+//        repo.commit();
+        System.out.println("0: " + StudentRepositorySingleton.getLastCreated());
     }
 
 }
